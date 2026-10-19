@@ -28,7 +28,7 @@ That's it: no terminal and no extra installs. The full steps are below if you ne
 
 **Your usage at a glance.** The bubble rings yellow, then red, as you near a limit, and it warns you early if your pace would run out before the reset. Hover over the mascot for reset times, a chart of the current window and a forecast. A tray icon by the clock shows the same numbers.
 
-**Claude Code stats.** A Claude Code tab with token counts, models, projects, an activity grid, and a recap of each session when it finishes. All of it is read from Claude Code's logs on your own computer.
+**Claude Code stats.** How full your latest Claude Code chat's context window is (in the bubble and on the Plan tab), with a reminder of what `/compact` and `/clear` do once it's getting full. A Claude Code tab with token counts, models, projects, an activity grid, and a recap of each session when it finishes. All of it is read from Claude Code's logs on your own computer.
 
 <p align="center"><img src="screenshots/panel-tabs.gif" alt="The details panel going through its tabs: Plan, then Claude Code's Overview (sessions, messages, tokens, peak hour, favourite model, an activity grid), Models, Projects and Sessions" width="372"></p>
 

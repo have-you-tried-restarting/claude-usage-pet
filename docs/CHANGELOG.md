@@ -2,6 +2,9 @@
 
 Newest first. The spec and how everything works are in `PROJECT_NOTES.md`.
 
+- **2026-10-20 (version 7.48): the README mentions the context window.**
+  - "What it does" says the bubble and the Plan tab show how full the latest Claude Code chat's context is, and that it reminds you what `/compact` and `/clear` do. Released as v7.48.
+
 - **2026-10-20 (version 7.47): the chat's context is a "Bubble shows" option.**
   - Settings > Appearance > Bubble shows has a new first choice, "Limits + context" (the default), next to Both limits, 5-hour only and On hover. It replaces 7.46's separate "Chat context in bubble" switch.
   - If that switch was on and Bubble shows was "Both limits", it becomes "Limits + context" once; otherwise your choice stays.

@@ -2,7 +2,7 @@
 
 A small Claude mascot that walks along the top of the Windows taskbar. A bubble above its head shows Claude plan usage. If any file here gets lost or corrupted, this note has enough detail to rebuild it. You can give this file to Claude and ask it to rebuild the project.
 
-Last updated: 2026-10-20 (version 7.47)
+Last updated: 2026-10-20 (version 7.48)
 
 The change log is in `CHANGELOG.md`, next to this file.
 
