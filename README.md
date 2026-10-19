@@ -12,7 +12,7 @@ A tiny pixel Claude that lives on your Windows taskbar and keeps an eye on your 
 
 The bubble over its head shows how much of your **5-hour** and **weekly** limits you've used (these cover claude.ai, the desktop app and Claude Code together). Hover over it for the details. While Claude Code is working, it puts on a wizard hat and acts out what Claude is doing.
 
-<p align="center"><img src="screenshots/hero.gif" alt="The mascot waves on the taskbar with its usage bubble, then the details panel fades in above it showing the 5-hour and weekly limits, reset times and a pace chart" width="400"></p>
+<p align="center"><img src="screenshots/hero.gif" alt="The mascot waves on the taskbar with its usage bubble (5-hour, weekly and context), then the details panel fades in above it showing the 5-hour and weekly limits, reset times, a pace chart and how full the latest Claude Code chat's context window is" width="400"></p>
 
 <p align="center">If the pet makes you smile, a ⭐ on GitHub helps other people find it.</p>
 
@@ -30,7 +30,7 @@ That's it: no terminal and no extra installs. The full steps are below if you ne
 
 **Claude Code stats.** How full your latest Claude Code chat's context window is (in the bubble and on the Plan tab), with a reminder of what `/compact` and `/clear` do once it's getting full. A Claude Code tab with token counts, models, projects, an activity grid, and a recap of each session when it finishes. All of it is read from Claude Code's logs on your own computer.
 
-<p align="center"><img src="screenshots/panel-tabs.gif" alt="The details panel going through its tabs: Plan, then Claude Code's Overview (sessions, messages, tokens, peak hour, favourite model, an activity grid), Models, Projects and Sessions" width="372"></p>
+<p align="center"><img src="screenshots/panel-tabs.gif" alt="The details panel going through its tabs: Claude Code's Overview (sessions, messages, tokens, peak hour, favourite model, an activity grid), Models, Projects and Sessions, then Plan with its context window card" width="372"></p>
 
 **Wizard mode.** While Claude Code works, the mascot casts a spell to match the tool it's using. It gets little apprentices when several sessions run at once.
 

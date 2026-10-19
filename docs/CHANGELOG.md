@@ -2,6 +2,10 @@
 
 Newest first. The spec and how everything works are in `PROJECT_NOTES.md`.
 
+- **2026-10-20 (version 7.49): new README pictures.**
+  - `hero.gif` and `panel-tabs.gif` are re-recorded so they show the context window: "ctx 13%" in the bubble and the Plan tab's "Context window" card. Same look as before (1x, slate backdrop, made-up projects and numbers); the hero is taller (400×662) to fit the longer Plan tab.
+  - The README's descriptions of both pictures mention the context window.
+
 - **2026-10-20 (version 7.48): the README mentions the context window.**
   - "What it does" says the bubble and the Plan tab show how full the latest Claude Code chat's context is, and that it reminds you what `/compact` and `/clear` do. Released as v7.48.
 
