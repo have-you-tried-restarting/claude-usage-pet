@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 
-VERSION = "7.45"          # shown in settings > about & stats. bump it with the version in docs/PROJECT_NOTES.md.
+VERSION = "7.46"          # shown in settings > about & stats. bump it with the version in docs/PROJECT_NOTES.md.
 
 # ---- settings ----
 DEFAULT_SCALE = 1.0        # starting size. after that the size you pick in the menu is remembered.
@@ -80,6 +80,11 @@ HOVER_DELAY = 0.3          # seconds of hovering before the details panel shows
 FADE_SECONDS = 0.18        # how long the details panel takes to fade in or out
 # working and talking
 CC_SCAN_SECONDS = 3        # how often to look at claude code's logs for new activity
+# a chat's context size by model (first match wins, otherwise 200k). the logs don't say which window a chat has,
+# so this is what the claude app showed, and anything past 200k must be the 1M one.
+CONTEXT_WINDOWS = (("claude-opus-5", 1_000_000), ("claude-sonnet-5", 1_000_000))
+CONTEXT_TIP_PCT = 50       # from this full, the plan tab says what /compact and /clear do
+CONTEXT_FRESH_MIN = 60     # the bubble only shows the chat's context if it replied this recently
 WORK_HOLD = 20             # keeps casting this long after the last sign of claude code working
 IDLE_TALK_MIN = 30         # starts commenting after this long with no token usage at all
 CHATTER = {"off": 0, "some": 1.0, "lots": 2.5, "max": 5.0}   # how often it talks (settings: chatter)

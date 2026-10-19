@@ -7,7 +7,7 @@ import tkinter.font as tkfont
 
 from .art import IDLE_C, PARK, RED
 from .cclog import compare_line, fmt_minutes, fmt_money, fmt_tokens, hour_label, pretty_model
-from .config import IDLE_AFTER_MIN, IDLE_POLL_SECONDS, SESSION_DONE_MIN
+from .config import CONTEXT_TIP_PCT, IDLE_AFTER_MIN, IDLE_POLL_SECONDS, SESSION_DONE_MIN
 from .ui import Canvas, Fader, Tooltip, move_window, round_corners, round_rect, to_front
 from .usage import (bar_color, fmt_day, fmt_time, fmt_when, forecast, pace_info, parse_rows, parse_time,
     period_seconds, reset_text)
@@ -19,7 +19,6 @@ PANEL_W = 340
 HEAT = ["#3a3936", "#173c6e", "#1f57a6", "#2b74e0", "#5aa2ff"]   # empty day, then busier and busier
 VIEWS = (("overview", "Overview"), ("models", "Models"), ("projects", "Projects"), ("sessions", "Sessions"))
 RANGES = (("7d", "7 days"), ("30d", "30 days"), ("all", "All time"))
-
 
 class Details:
     # styled like the claude desktop app (and the settings window): warm greys, segmented controls,
@@ -280,11 +279,34 @@ class Details:
         y += 14
         if rows:
             y = self.draw_chart(y, rows, now_dt)
+        y = self.draw_context(y)
         st = p.cc_stats()
         if st:
             y = self.text(14, y, f"Claude Code today: {fmt_tokens(st['today'])} tokens · about "
                                  f"{fmt_money(st['today_cost'])} at API prices", self.FAINT, 7.5, width=W - 28) + 4
         return y
+
+    def draw_context(self, y):
+        # how full the latest claude code chat's context is
+        info = self.pet.cc.context_info()
+        if info is None:
+            return y
+        y = self.heading(y, "Context window", f"latest Claude Code chat · {fmt_minutes(time.time() - info['when'].timestamp())} ago")
+        top = y
+        y += 12
+        name = self.pet.cc.titles.get(info["session"], "Latest chat")
+        self.text(26, y, name if len(name) <= 34 else name[:33] + "…", self.FG, 9, True)
+        self.text(PANEL_W - 26, y, f"{info['pct']:.0f}% full", self.FG, 9, True, "ne")
+        self.bar(26, y + 22, PANEL_W - 26, info["pct"] / 100, bar_color(info["pct"]))
+        y = self.text(26, y + 36, f"{fmt_tokens(info['tokens'])} of {fmt_tokens(info['window'])} tokens: how much of the "
+                                  "chat Claude is holding in mind", self.DIM, 7.5, width=PANEL_W - 52) + 2
+        if info["pct"] >= CONTEXT_TIP_PCT:   # getting full: say what to do about it
+            y = self.text(26, y + 4, "Getting full. Type /compact to have Claude sum up the chat so far and carry on with "
+                                 "room to spare, or /clear to start a fresh chat (Claude forgets this one). Claude Code "
+                                 "compacts by itself when it's nearly full.", self.FIXC, 7.5, width=PANEL_W - 52) + 2
+        y += 12
+        self.card(top, y)
+        return y + 14
 
     def draw_chart(self, y, rows, now_dt):
         # usage so far in the current window, against the pace line, plus a forecast

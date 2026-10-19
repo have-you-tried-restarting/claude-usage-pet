@@ -91,6 +91,10 @@ TIPS = {
     "Size": ("How big the mascot is. Ctrl + mouse wheel over it works too.", []),
     "Bubble shows": ("Which limits the bubble above its head shows, or only show it when you hover.", []),
     "Bubble style": ("Numbers, or two small bars.", []),
+    "Chat context in bubble": ("How full the latest Claude Code chat's context is, like \"ctx 62%\". It's always "
+                               "in the details panel.", [
+        ("On", "Shows it while that chat has replied in the last hour."),
+        ("Off", "Only the details panel shows it.")]),
     "Clock": ("How times are shown in the details panel, like when a limit resets.", []),
     "Dates": ("Day first or month first, like Fri 16/10 or Fri 10/16.", []),
     "Apprentices for parallel sessions": ("Little apprentice wizards join in when more than one Claude Code "

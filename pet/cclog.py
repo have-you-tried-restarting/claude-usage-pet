@@ -8,7 +8,7 @@ import time
 from collections import Counter
 from pathlib import Path
 
-from .config import APP_PROJECTS, CC_CACHE, CC_LOGS, CC_SCAN_SECONDS
+from .config import APP_PROJECTS, CC_CACHE, CC_LOGS, CC_SCAN_SECONDS, CONTEXT_WINDOWS
 from .storage import log_error
 from .usage import parse_time
 
@@ -263,6 +263,7 @@ class ClaudeCodeLog:
         self.ready = False
         self.job = (0.0, None)    # (when, kind) of the last tool claude used that the mascot has a look for
         self.active = {}          # session -> when it last wrote something (live, since the pet started)
+        self.context = None       # (time, session, tokens, model) of the newest main-chat answer: how full its context was
         self.dirty, self.saved_at = False, 0.0   # for the cache file
 
     def run(self):
@@ -358,7 +359,8 @@ class ClaudeCodeLog:
                 "answers": [row(a) for a in self.answers], "copies": [row(a) for a in self.copies],
                 "starts": {k: t(v) for k, v in self.starts.items()}, "lines": [[t(w), s] for w, s in self.lines],
                 "line_copies": [[t(w), s] for w, s in self.line_copies], "titles": self.titles,
-                "log_cwd": self.log_cwd, "moves": self.moves}
+                "log_cwd": self.log_cwd, "moves": self.moves,
+                "context": self.context and [t(self.context[0]), *self.context[1:]]}
         tmp = CC_CACHE.with_name(CC_CACHE.name + ".tmp")
         try:
             with gzip.open(tmp, "wt", encoding="utf-8") as fh:
@@ -397,8 +399,20 @@ class ClaudeCodeLog:
         self.titles = {str(k): str(v) for k, v in data["titles"].items()}
         self.log_cwd = {str(k): str(v) for k, v in data["log_cwd"].items()}
         self.moves = {str(k): str(v) for k, v in data["moves"].items()}
+        ctx = data.get("context")   # (older caches don't have it)
+        self.context = (when(ctx[0]), str(ctx[1]), int(ctx[2]), str(ctx[3])) if ctx else None
         self.answers, self.copies, self.lines, self.offsets = answers, copies, lines, offsets
         self.saved_at = time.time()
+
+    def context_info(self):
+        # the newest chat: {pct, window, tokens, when, session}, or None
+        if self.context is None:
+            return None
+        when, session, tokens, model = self.context
+        # shortcut: the window is guessed from the model (the logs don't say). fine until a model's default changes.
+        window = next((n for start, n in CONTEXT_WINDOWS if model.startswith(start)), 200_000)
+        window = window if tokens <= window else 1_000_000
+        return {"pct": 100 * tokens / window, "window": window, "tokens": tokens, "when": when, "session": session}
 
     def usage_curve(self, start, end):
         # claude code's token use between two times as a running total, roughly weighted by what each
@@ -480,6 +494,10 @@ class ClaudeCodeLog:
                 return 0
             self.seen_answers.add(key)
             self.answers.append(row)
+            # input + cache write + cache read is everything the model was sent: how full the chat is.
+            # subagents (sidechains) have their own context, so they don't count.
+            if not d.get("isSidechain") and (self.context is None or when >= self.context[0]):
+                self.context = (when, session, row[3] + row[5] + row[6], row[2])
             return row[4]
         return 0
 

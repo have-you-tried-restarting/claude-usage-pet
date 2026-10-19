@@ -99,14 +99,14 @@ def log_usage(line):
 # ---- settings and memory files ----
 
 DEFAULTS = {"scale": DEFAULT_SCALE, "energy": "normal", "walk": True, "jump": True, "naps": True, "anim": True,
-            "bubble": "both", "bubble_style": "numbers", "clock": "12h", "dates": "ddmm", "chatter": "some", "wizard": True, "warn": True, "cc_app": True, "notify": True, "sounds": False, "hotkeys": True,
+            "bubble": "both", "bubble_style": "numbers", "bubble_ctx": True, "clock": "12h", "dates": "ddmm", "chatter": "some", "wizard": True, "warn": True, "cc_app": True, "notify": True, "sounds": False, "hotkeys": True,
             "platforms": True, "volume": 60, "muted": [], "keys": None, "settings_size": None,
             "warn_at": WARN_AT, "panic_at": PANIC_AT, "poll": POLL_SECONDS,
             "hide_fs": True, "one_monitor": False, "panel_tab": "plan", "plan_chart": "5h", "cc_view": "overview",
             "cc_range": "all", "x": None, "y": None,
             "tray": True, "pace_warn": True, "seasonal": True, "quiet_hours": False, "quiet_from": 22, "quiet_to": 7,
             "dnd": True, "rare": True, "apprentices": True, "bedtime": True, "bedtime_at": 23, "dev": False}
-BOOLS = ("walk", "jump", "naps", "anim", "wizard", "warn", "cc_app", "notify", "sounds", "hotkeys", "platforms",
+BOOLS = ("bubble_ctx", "walk", "jump", "naps", "anim", "wizard", "warn", "cc_app", "notify", "sounds", "hotkeys", "platforms",
          "hide_fs", "one_monitor", "tray", "pace_warn", "seasonal", "quiet_hours", "dnd", "rare", "apprentices",
          "bedtime", "dev")
 CHOICES = {"energy": tuple(PROFILES), "bubble": ("both", "5h", "hover"), "bubble_style": ("numbers", "bars"), "clock": ("12h", "24h"), "dates": ("ddmm", "mmdd"),

@@ -8,7 +8,7 @@ import time
 
 from . import usage
 from .art import DIM, IDLE_C, RED
-from .config import (DEFAULT_KEYS, FAKE_USAGE_ENV, IDLE_AFTER_MIN, IDLE_POLL_SECONDS, ERROR_RETRY_MAX, MIN_FETCH_GAP,
+from .config import (CONTEXT_FRESH_MIN, DEFAULT_KEYS, FAKE_USAGE_ENV, IDLE_AFTER_MIN, IDLE_POLL_SECONDS, ERROR_RETRY_MAX, MIN_FETCH_GAP,
     NICE, PACE_WARN, RATE_LIMITED_MAX, RATE_LIMITED_SECONDS, REFUSED_RETRY_SECONDS, SHORT, SLOW_AFTER_LIMIT, STALE_MIN)
 from .lines import MILESTONES, PACE_LINES, RESET_LINES
 from .storage import log_error, log_usage
@@ -366,18 +366,31 @@ class DataMixin:
         old = self.stale_for()
         segs = [(f"{SHORT.get(r['key'], r['label'])} {r['pct']:.0f}%", DIM if old else bar_color(r["pct"]))
                 for r in self.shown_rows()]
+        limits = len(segs)
         if old:
             segs.append((f"{old}m old" if old < 120 else f"{old // 60}h old", DIM))
         elif segs and self.idle():
             segs.append(("idle", IDLE_C))   # the numbers are fine, just checked less often
         if self.error:
             segs.append(("!" if segs else short_error(self.error), RED))
+        ctx = self.bubble_context()
+        if ctx is not None:   # next to the limits, so "idle", "old" and "!" stay on the right
+            segs.insert(limits, (f"ctx {ctx:.0f}%", bar_color(ctx)))
         return segs or [("...", DIM)]
 
     def bubble_bars(self):
         old = self.stale_for()
-        return [(SHORT.get(r["key"], r["label"][:4]), round(r["pct"]), DIM if old else bar_color(r["pct"]))
+        bars = [(SHORT.get(r["key"], r["label"][:4]), round(r["pct"]), DIM if old else bar_color(r["pct"]))
                 for r in self.shown_rows()]
+        ctx = self.bubble_context()
+        return bars + ([("ctx", round(ctx), bar_color(ctx))] if ctx is not None else [])
+
+    def bubble_context(self):
+        # how full the latest claude code chat is, if it's switched on and the chat replied lately
+        info = self.cc.context_info() if self.bubble_ctx.get() else None
+        if info is None or time.time() - info["when"].timestamp() > CONTEXT_FRESH_MIN * 60:
+            return None
+        return info["pct"]
 
     def warn_level(self):
         # 0 = fine (or warnings switched off), 1 = yellow ring, 2 = red ring, 3 = completely used up

@@ -2,6 +2,13 @@
 
 Newest first. The spec and how everything works are in `PROJECT_NOTES.md`.
 
+- **2026-10-20 (version 7.46): how full the current Claude Code chat is.**
+  - The Plan tab has a "Context window" card under the chart: the chat's name, "13% full", a bar, and "126k of 1M tokens". From 50% full it explains what to do: /compact sums up the chat so far and carries on with room to spare, /clear starts a fresh chat, and Claude Code compacts by itself when it's nearly full.
+  - The bubble shows it too ("ctx 13%", or a third bar in the bars style), next to the limits so "idle", "old" and "!" stay on the far right. It's left out once that chat hasn't replied for an hour. A new setting, Appearance > Chat context in bubble, turns it off.
+  - Comes from the newest non-subagent answer in Claude Code's logs: input + cache write + cache read. The logs don't say which window a chat has, so it goes by model (Opus 5 and Sonnet 5 are 1M; anything else 200k), and anything past 200k is taken as 1M. Saved in the log cache, so it's there after a restart.
+  - Tried and dropped in the same session: a separate Context tab laid out like the Claude app's context panel, with the split read from `/context` (which saves its table in the log as `contextUsage`). Back to the simple card.
+  - Tested with made-up logs in a scratch folder: the newest chat wins, subagent answers are ignored, the window size comes out right, and it survives the cache. A scratch test pet (`PET_FAKE_USAGE=ok`, made-up logs) showed the card and "ctx 13%" in both bubble styles, with "idle" on the far right, and the /compact tip at 64%. Not tried in the running pet or with real chats.
+
 - **2026-10-17 (version 7.45): warnings aren't cut off by "abra-code-abra!".**
   - A usage check where the 5-hour % went up starts the wizard, and about a second later its "starting work" line (`WORK_START`) replaced whatever the same check had just said: a milestone ("75% of the 5-hour limit used"), the pace warning or the reset line.
   - Now the starting-work line is only said when no other line is up; otherwise it's skipped (the hat still goes on).

@@ -100,11 +100,13 @@ class SettingsWindow:
                         row("choice", "Bedtime from", "bedtime_at", p.bedtime_at, p.changed,
                             [(v, hour_name(v)) for v in BEDTIME_CHOICES], show=lambda: bool(p.bedtime.get()),
                             words="night time hour")]),
-                    ("Usage bubble", ["bubble", "bubble_style"], [
+                    ("Usage bubble", ["bubble", "bubble_style", "bubble_ctx"], [
                         row("choice", "Bubble shows", "bubble", p.bubble_mode, p.changed,
                             (("both", "Both limits"), ("5h", "5-hour only"), ("hover", "On hover"))),
                         row("choice", "Bubble style", "bubble_style", p.bubble_style, p.changed,
                             (("numbers", "Numbers"), ("bars", "Bars"))),
+                        row("toggle", "Chat context in bubble", "bubble_ctx", p.bubble_ctx, p.changed,
+                            words="context window full tokens 200k compact"),
                         row("toggle", "Keep details open", None, p.pin_var, p.pin_changed, words="panel pin")]),
                     ("Time and date", ["clock", "dates"], [
                         row("choice", "Clock", "clock", p.clock_fmt, p.clock_changed, (("12h", "3:05 PM"), ("24h", "15:05")),
