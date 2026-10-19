@@ -387,7 +387,7 @@ class DataMixin:
 
     def bubble_context(self):
         # how full the latest claude code chat is, if it's switched on and the chat replied lately
-        info = self.cc.context_info() if self.bubble_ctx.get() else None
+        info = self.cc.context_info() if self.bubble_mode.get() == "all" else None
         if info is None or time.time() - info["when"].timestamp() > CONTEXT_FRESH_MIN * 60:
             return None
         return info["pct"]

@@ -2,6 +2,12 @@
 
 Newest first. The spec and how everything works are in `PROJECT_NOTES.md`.
 
+- **2026-10-20 (version 7.47): the chat's context is a "Bubble shows" option.**
+  - Settings > Appearance > Bubble shows has a new first choice, "Limits + context" (the default), next to Both limits, 5-hour only and On hover. It replaces 7.46's separate "Chat context in bubble" switch.
+  - If that switch was on and Bubble shows was "Both limits", it becomes "Limits + context" once; otherwise your choice stays.
+  - The descriptions for Bubble shows (one line per choice) and Bubble style (one bar for each thing shown) are updated.
+  - Tested: the settings file moves over right in all six cases tried, and a scratch test pet showed the four choices in settings and "ctx" in the bubble with the new default. Not tried in the running pet.
+
 - **2026-10-20 (version 7.46): how full the current Claude Code chat is.**
   - The Plan tab has a "Context window" card under the chart: the chat's name, "13% full", a bar, and "126k of 1M tokens". From 50% full it explains what to do: /compact sums up the chat so far and carries on with room to spare, /clear starts a fresh chat, and Claude Code compacts by itself when it's nearly full.
   - The bubble shows it too ("ctx 13%", or a third bar in the bars style), next to the limits so "idle", "old" and "!" stay on the far right. It's left out once that chat hasn't replied for an hour. A new setting, Appearance > Chat context in bubble, turns it off.

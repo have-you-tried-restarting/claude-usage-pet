@@ -75,7 +75,6 @@ class Pet(ScreensMixin, MouseMixin, TalkMixin, DataMixin, MovementMixin, RenderM
         self.one_monitor = tk.BooleanVar(value=st["one_monitor"])
         self.bubble_mode = tk.StringVar(value=st["bubble"])
         self.bubble_style = tk.StringVar(value=st["bubble_style"])
-        self.bubble_ctx = tk.BooleanVar(value=st["bubble_ctx"])   # the latest chat's context % in the bubble
         self.clock_fmt = tk.StringVar(value=st["clock"])   # 12h (3:05 PM) or 24h (15:05)
         self.dates = tk.StringVar(value=st["dates"])   # ddmm (Fri 16/10) or mmdd (Fri 10/16)
         self.clock_changed(save=False)
@@ -270,7 +269,7 @@ class Pet(ScreensMixin, MouseMixin, TalkMixin, DataMixin, MovementMixin, RenderM
     def save(self):
         st = {k: (v.get() if isinstance(v, tk.Variable) else v) for k, v in (
             ("scale", self.scale), ("energy", self.energy), ("walk", self.walk), ("jump", self.jump), ("naps", self.naps),
-            ("anim", self.anim), ("bubble", self.bubble_mode), ("bubble_style", self.bubble_style), ("bubble_ctx", self.bubble_ctx), ("clock", self.clock_fmt), ("dates", self.dates),
+            ("anim", self.anim), ("bubble", self.bubble_mode), ("bubble_style", self.bubble_style), ("clock", self.clock_fmt), ("dates", self.dates),
             ("chatter", self.chatter), ("wizard", self.wizard), ("warn", self.warn), ("cc_app", self.cc_app), ("warn_at", self.warn_at), ("panic_at", self.panic_at), ("poll", self.poll),
             ("notify", self.notify_on), ("sounds", self.sounds), ("hotkeys", self.hotkeys),
             ("platforms", self.platforms), ("volume", self.volume), ("muted", sorted(self.muted)), ("keys", self.binds), ("settings_size", self.settings_size), ("hide_fs", self.hide_fs),
