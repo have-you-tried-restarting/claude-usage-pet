@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 
-VERSION = "7.49"          # shown in settings > about & stats. bump it with the version in docs/PROJECT_NOTES.md.
+VERSION = "7.50"          # shown in settings > about & stats. bump it with the version in docs/PROJECT_NOTES.md.
 
 # ---- settings ----
 DEFAULT_SCALE = 1.0        # starting size. after that the size you pick in the menu is remembered.

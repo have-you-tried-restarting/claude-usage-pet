@@ -10,10 +10,9 @@ TIPS = {
     "Keep details open": ("Pins the details panel above the mascot.", [
         ("On", "The panel stays open until you close it with ×."),
         ("Off", "The panel opens when you hover the mascot and fades away when you move off.")]),
-    "Count tokens like the Claude app": ("Chooses how the Claude Code tab counts tokens and picks the peak hour.", [
-        ("On", "Matches the Claude desktop app: every logged copy of an answer is added up, and peak hour "
-               "is when your sessions start."),
-        ("Off", "Real numbers: each answer is counted once (about 3× lower), and peak hour is your busiest hour.")]),
+    "Count tokens like the Claude app": ("Chooses how the Claude Code tab counts tokens.", [
+        ("On", "Matches the Claude desktop app: every logged copy of an answer is added up."),
+        ("Off", "Real numbers: each answer is counted once (about 3× lower).")]),
     "Personality": ("How much the mascot moves about. Hover an option to see what it does.", [
         ("Parkour!", "Hardly ever stands still. It runs about fast, jumps from window to window every few seconds, "
                      "dives off window edges into hay, heads off to your other monitors, and always finds a way up "

@@ -3,6 +3,7 @@ import datetime
 import gzip
 import json
 import os
+import random
 import re
 import time
 from collections import Counter
@@ -97,10 +98,19 @@ def fmt_money(d):
     return f"${d:,.2f}" if d < 1000 else f"${d:,.0f}"
 
 
-# rough book sizes in tokens, for the fun comparison in the claude code tab
-BOOKS = [("The Little Prince", 22_000), ("The Great Gatsby", 61_000), ("The Hobbit", 124_000),
-         ("Pride and Prejudice", 156_000), ("Moby-Dick", 270_000), ("The Lord of the Rings", 625_000),
-         ("War and Peace", 760_000), ("all seven Harry Potter books", 1_400_000)]
+# rough sizes in tokens (about 1.3 per word), for the fun comparison in the claude code tab
+BOOKS = [("The Little Prince", 22_000), ("Alice in Wonderland", 35_000), ("Animal Farm", 40_000),
+         ("The Great Gatsby", 61_000), ("Frankenstein", 98_000), ("the first Harry Potter book", 100_000),
+         ("1984", 116_000), ("The Hobbit", 124_000), ("Pride and Prejudice", 160_000), ("Dracula", 210_000),
+         ("Jane Eyre", 240_000), ("Moby-Dick", 270_000), ("Ulysses", 345_000), ("A Game of Thrones", 390_000),
+         ("Anna Karenina", 460_000), ("Don Quixote", 500_000), ("The Count of Monte Cristo", 610_000),
+         ("The Lord of the Rings", 625_000), ("Les Misérables", 700_000), ("Infinite Jest", 710_000),
+         ("War and Peace", 760_000), ("Atlas Shrugged", 840_000), ("the complete Sherlock Holmes", 850_000),
+         ("the whole Bible", 1_000_000), ("the complete works of Shakespeare", 1_150_000),
+         ("all seven Harry Potter books", 1_400_000), ("Remembrance of Things Past", 1_650_000),
+         ("the first five A Song of Ice and Fire books", 2_200_000), ("the Mahabharata", 2_400_000),
+         ("the whole Wheel of Time series", 5_700_000), ("the Encyclopaedia Britannica", 57_000_000),
+         ("all of English Wikipedia", 6_000_000_000)]
 
 # ---- claude code's local logs ----
 
@@ -127,19 +137,21 @@ def hour_label(h):
 def compare_line(tokens):
     fits = [(name, size) for name, size in BOOKS if tokens >= 2 * size]
     if fits:
-        name, size = fits[-1]
+        # one of the biggest few it beats by a sensible margin, the same all day so the line doesn't flicker
+        near = [f for f in fits if tokens / f[1] <= 40] or fits[-1:]
+        name, size = random.Random(f"{datetime.date.today()} {tokens // 1000}").choice(near[-6:])
         return f"You've used ~{tokens / size:.0f}× more tokens than {name}."
     if tokens >= BOOKS[0][1]:
         return f"That's about as many tokens as {BOOKS[0][0]}."
     return f"That's {100 * tokens / BOOKS[0][1]:.0f}% of {BOOKS[0][0]} so far."
 
 
-def build_stats(answers, lines, starts=None, real=None):
+def build_stats(answers, lines, real=None, hour_lines=None):
     # the claude code tab's numbers, for all time, 30 days and 7 days.
-    # starts (log -> first line's time) = peak hour is the hour most sessions start in, all time whatever the
-    # range, like the claude app.
+    # hour_lines = the lines peak hour is worked out from (each message once, not the copies in resumed logs)
     # real = each answer once. the cost estimate always uses that, whichever way tokens are counted.
     real = answers if real is None else real
+    hour_lines = lines if hour_lines is None else hour_lines
     today = datetime.date.today()
     by_day = Counter()
     for a in answers:
@@ -156,14 +168,8 @@ def build_stats(answers, lines, starts=None, real=None):
                 parts[i] += a[3 + i]
             if not a[2].startswith("<"):   # skip claude code's made-up "<synthetic>" entries
                 models[a[2]] += a[3] + a[4] + a[5] + a[6]
-        hours = Counter(ln[0].hour for ln in L)
+        hours = Counter(ln[0].hour for ln in hour_lines if since is None or ln[0].date() >= since)
         peak = max(sorted(hours), key=hours.get) if hours else None   # a tie: the earlier hour
-        if starts:   # (the app ignores the range here)
-            began, peak = Counter(), None
-            for t in sorted(starts.values()):   # a tie keeps the hour that got there first
-                began[t.hour] += 1
-                if peak is None or began[t.hour] > began[peak]:
-                    peak = t.hour
         projects, proj_sessions, cost, unpriced = Counter(), {}, 0.0, False
         for a in A:
             proj = a[8] if len(a) > 8 else "?"
@@ -324,7 +330,7 @@ class ClaudeCodeLog:
         if self.stats is None or (changed and time.time() - self.built_at > 10):
             answers, copies = named(self.answers, self.titles, self.moves), named(self.copies, self.titles, self.moves)
             self.stats = {"real": build_stats(answers, self.lines),
-                          "app": build_stats(answers + copies, self.lines + self.line_copies, self.starts, answers)}
+                          "app": build_stats(answers + copies, self.lines + self.line_copies, answers, self.lines)}
             self.built_at = time.time()
         if not self.ready:
             self.save_cache()   # the first full read is the slow one: save it straight away

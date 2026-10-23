@@ -2,7 +2,7 @@
 
 A small Claude mascot that walks along the top of the Windows taskbar. A bubble above its head shows Claude plan usage. If any file here gets lost or corrupted, this note has enough detail to rebuild it. You can give this file to Claude and ask it to rebuild the project.
 
-Last updated: 2026-10-20 (version 7.49)
+Last updated: 2026-10-23 (version 7.50)
 
 The change log is in `CHANGELOG.md`, next to this file.
 
@@ -273,10 +273,10 @@ Only one pet runs at a time. Starting it again while it's already running calls 
 - Assistant lines have `message.usage` (`input_tokens`, `output_tokens`, `cache_creation_input_tokens`, `cache_read_input_tokens`), plus `message.model`, `message.id`, `requestId`, `timestamp` (UTC), `sessionId` and `uuid`.
 - **Each answer is logged several times** (once per content block, with the same usage repeated).
 - **Resumed or forked sessions** start their new log with a copy of the old conversation (same line `uuid`s). `seen_lines` remembers which log each line was first in; a line seen again in a *different* log is a copy (`line_copies`, and its answer goes in `copies`), while the same log read again is ignored.
-- **"Count tokens like the Claude app" (default):** adds up every copy, like the Claude desktop app, both the repeated content blocks and the lines copied into other logs (so "Messages" and "Total tokens" match the app), and "Peak hour" is the hour most sessions *start* in (see "Peak hour, app way" below).
-- **Switched off (real count):** each `(message.id, requestId)` pair is counted once, about 3× lower, and "Peak hour" is the hour with the most messages.
+- **"Count tokens like the Claude app" (default):** adds up every copy, like the Claude desktop app, both the repeated content blocks and the lines copied into other logs (so "Messages" and "Total tokens" match the app).
+- **Switched off (real count):** each `(message.id, requestId)` pair is counted once, about 3× lower,.
 - "Messages" counts every user and assistant line: each `uuid` once in the real count, every copy in the app count.
-- **Peak hour, app way** (from Claude Code GitHub issues #65775 and #83678, not official docs): one count per log file, at the local hour of its *first* user or assistant line in file order (not the earliest time in it), and always all-time, whatever range is picked. On a tie the pet keeps the hour that got to the top first (that matched the app on 2026-10-11, with 12 PM, 5 PM and 10 PM tied). The app reads this from its own cache, which can lag behind, so it may still differ for a while after new sessions.
+- **Peak hour** (since 7.50, in both modes): the local hour with the most messages (each message once, not the copies in resumed logs), for the range picked. A tie: the earlier hour. It no longer copies the Claude app.
 - "Total tokens" is input + output + cache write + cache read.
 - Only numbers are kept from the logs (times, session ids, model names, token counts, the project folder's path and each session's name in the Claude app), never message text. Live, it also notes which tool Claude just used, by name only (`message.content[].name` of a `tool_use`), never what the tool was given.
 - **The cache:** after the first full read, everything kept above is saved to `pet_cc_cache.json.gz` with how far into each log it got, and saved again every 5 minutes when something changed. On start the pet loads it and only reads what's new. If any log it knew got shorter or disappeared, the cache is thrown away and every log is read again, so deleted logs drop out of the stats as before. Logs are read 4 MB at a time, and a single line bigger than that is skipped.

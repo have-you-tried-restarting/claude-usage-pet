@@ -2,6 +2,11 @@
 
 Newest first. The spec and how everything works are in `PROJECT_NOTES.md`.
 
+- **2026-10-23 (version 7.50): real peak hour, more comparisons.**
+  - Peak hour is now your busiest hour (most messages, each counted once, following the 7/30 day/all range) in both counting modes. GitHub dropped the Claude Code dashboard, so there's nothing to match. The "sessions start" code is gone; `starts` stays in the log cache (unused).
+  - "You've used ~N× more tokens than ..." now picks from 32 comparisons (short novels up to Wikipedia), one of the biggest few it beats by at most 40×, the same all day.
+  - Tested: `compare_line` at several sizes and `build_stats` peak on made-up lines. Not tested: the panel on screen.
+
 - **2026-10-20 (version 7.49): new README pictures.**
   - `hero.gif` and `panel-tabs.gif` are re-recorded so they show the context window: "ctx 13%" in the bubble and the Plan tab's "Context window" card. Same look as before (1x, slate backdrop, made-up projects and numbers); the hero is taller (400×662) to fit the longer Plan tab.
   - The README's descriptions of both pictures mention the context window.
